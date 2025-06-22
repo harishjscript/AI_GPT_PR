@@ -5,7 +5,7 @@ on:
     types: [opened, synchronize, reopened]
 
 permissions:
-  pull-requests: write
+  pull-requests: write  # Required for PR comment
 
 jobs:
   ai_review:
@@ -15,16 +15,16 @@ jobs:
     - name: Checkout PR branch
       uses: actions/checkout@v3
       with:
+        fetch-depth: 0  # Ensure full commit history
         token: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Fetch base branch (main)
+    - name: Fetch base and head branches
       run: |
-        git fetch origin main
+        git fetch origin ${{ github.base_ref }}:${{ github.base_ref }}
+        git fetch origin ${{ github.head_ref }}:${{ github.head_ref }}
 
     - name: Generate PR diff
       run: |
-        git fetch origin ${{ github.base_ref }}
-        git fetch origin ${{ github.head_ref }}
         git diff origin/${{ github.base_ref }}...origin/${{ github.head_ref }} > diff.txt
 
     - name: Run AI Review with OpenAI
@@ -39,10 +39,12 @@ jobs:
           -H "Content-Type: application/json" \
           -d '{
             "model": "gpt-3.5-turbo",
-            "messages": [{
-              "role": "user",
-              "content": "Act as a senior software engineer. Review the following code diff for correctness, security, performance, and best practices:\n\n'"$DIFF_CONTENT"'"
-            }]
+            "messages": [
+              {
+                "role": "user",
+                "content": "Act as a senior software engineer. Review the following code diff for correctness, security, performance, and best practices:\n\n'"$DIFF_CONTENT"'"
+              }
+            ]
           }')
 
         REVIEW=$(echo "$RESPONSE" | jq -r '.choices[0].message.content')
