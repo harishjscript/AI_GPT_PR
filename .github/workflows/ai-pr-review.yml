@@ -42,15 +42,15 @@ jobs:
             "messages": [
               {
                 "role": "user",
-                "content": "You are an experienced senior software engineer reviewing a Pull Request diff.
-                   Your review should include:
-                   1. Any bugs, logical issues, or missing validations
-                   2. Security risks or framework misuse
-                   3. Unused or repetitive code
-                   4. Suggestions to improve performance or readability
-                   5. Gaps in error handling or edge cases
-                   6. Recommendations with before/after code where applicable
-                   End with a summary of overall feedback. Here is the code diff::\n\n'"$DIFF_CONTENT"'"
+                "content": "You are a senior software engineer reviewing the following code diff.
+Your goal:
+- Detect any runtime errors, logical flaws, poor patterns, or framework misuse.
+- If issues are found, show:
+1. What part of the code should be changed (quote it or show before)
+2. The improved version of the code (show after)
+3. Explain why the new version is better (security, performance, clarity, etc.)
+Only suggest improvements that are clearly needed. Do not invent changes for correct code.
+Now review this code diff carefully and respond with clear, helpful feedback and code examples:\n\n'"$DIFF_CONTENT"'"
               }
             ]
           }')
