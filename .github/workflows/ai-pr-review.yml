@@ -42,7 +42,15 @@ jobs:
             "messages": [
               {
                 "role": "user",
-                "content": "Act as a senior software engineer. Review the following code diff for correctness, security, performance, and best practices:\n\n'"$DIFF_CONTENT"'"
+                "content": "You are an experienced senior software engineer reviewing a Pull Request diff.
+                   Your review should include:
+                   1. Any bugs, logical issues, or missing validations
+                   2. Security risks or framework misuse
+                   3. Unused or repetitive code
+                   4. Suggestions to improve performance or readability
+                   5. Gaps in error handling or edge cases
+                   6. Recommendations with before/after code where applicable
+                   End with a summary of overall feedback. Here is the code diff::\n\n'"$DIFF_CONTENT"'"
               }
             ]
           }')
