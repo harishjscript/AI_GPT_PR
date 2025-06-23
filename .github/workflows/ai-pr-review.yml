@@ -34,22 +34,18 @@ jobs:
       run: |
         DIFF_CONTENT=$(cat diff.txt | sed 's/"/\\"/g' | sed ':a;N;$!ba;s/\n/\\n/g')
 
-        PROMPT=$(cat <<EOF
-You are an experienced senior software engineer reviewing a Pull Request.
-
-Your goal:
-1. Detect runtime errors, logical flaws, or misuse of libraries/frameworks.
-2. Call out missing validations, edge cases, or error handling.
-3. Flag duplicate, unused, or repetitive code.
-4. Suggest cleaner, more secure, or faster alternatives with reasoning.
-5. If possible, show before/after code and explain why it's better.
-
-Only suggest real improvements. Do not rewrite working code for style only.
-
-Here is the code diff:
-$DIFF_CONTENT
-EOF
-)
+        RESPONSE=$(curl -s https://api.openai.com/v1/chat/completions \
+          -H "Authorization: Bearer $OPENAI_API_KEY" \
+          -H "Content-Type: application/json" \
+          -d '{
+            "model": "gpt-3.5-turbo",
+            "messages": [
+              {
+                "role": "user",
+                "content": "Act as a senior software engineer. Review the following code diff for correctness, security, performance, and best practices:\n\n'"$DIFF_CONTENT"'"
+              }
+            ]
+          }')
 
         REVIEW=$(echo "$RESPONSE" | jq -r '.choices[0].message.content')
 
