@@ -47,6 +47,7 @@ Your goal:
 - Detect any runtime errors, logical flaws, poor patterns, or framework misuse.
 - If issues are found, show:
 1. What part of the code should be changed (quote it or show before)
+
 2. The improved version of the code (show after)
 3. Explain why the new version is better (security, performance, clarity, etc.)
 Only suggest improvements that are clearly needed. Do not invent changes for correct code.
